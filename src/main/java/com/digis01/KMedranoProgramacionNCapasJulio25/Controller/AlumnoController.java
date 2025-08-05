@@ -1,0 +1,30 @@
+package com.digis01.KMedranoProgramacionNCapasJulio25.Controller;
+
+import com.digis01.KMedranoProgramacionNCapasJulio25.DAO.AlumnoDAOImplementation;
+import com.digis01.KMedranoProgramacionNCapasJulio25.ML.Result;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@Controller
+@RequestMapping("alumno")
+public class AlumnoController {
+    
+    @Autowired
+    private AlumnoDAOImplementation alumnoDAOImplementation;
+    
+    @GetMapping
+    public String Index(Model model){
+        Result result = alumnoDAOImplementation.GetAll();
+        
+        if (result.correct) {
+            model.addAttribute("alumnos", result.objects);
+        } else  {
+            model.addAttribute("alumnos", null);
+        }
+        
+        return "AlumnoIndex";
+    }
+}
