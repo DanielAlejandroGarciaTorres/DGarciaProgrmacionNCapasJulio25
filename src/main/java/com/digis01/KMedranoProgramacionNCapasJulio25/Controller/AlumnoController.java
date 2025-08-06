@@ -32,10 +32,13 @@ public class AlumnoController {
     @GetMapping("alumnoDetail/{idAlumno}")
     public String AlumnoDetail(@PathVariable int idAlumno, Model model){
         
-        /*
-        alumnoDAOImplementation.GetDetail(idAlumno);
-        vista que muestre info alumno y una tabla con sus direcciones
-        */
+        Result result = alumnoDAOImplementation.DireccionesByIdAlumno(idAlumno);
+        
+        if (result.correct) {
+            model.addAttribute("alumno", result.object);
+        } else {
+            return "Error";
+        }
         
         return "AlumnoDetail";
     }

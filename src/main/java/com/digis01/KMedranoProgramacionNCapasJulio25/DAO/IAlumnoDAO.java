@@ -7,4 +7,5 @@ public interface IAlumnoDAO {
     
     Result GetAll();// metodo abstracto, es decir, no lleva implementación
     
+    Result DireccionesByIdAlumno(int idAlumno);
 }
