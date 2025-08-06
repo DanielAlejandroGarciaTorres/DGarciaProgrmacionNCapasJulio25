@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
@@ -15,7 +16,7 @@ public class AlumnoController {
     @Autowired
     private AlumnoDAOImplementation alumnoDAOImplementation;
     
-    @GetMapping
+    @GetMapping // verbo http GET, POST, PUT, DELETE, PATCH
     public String Index(Model model){
         Result result = alumnoDAOImplementation.GetAll();
         
@@ -26,5 +27,16 @@ public class AlumnoController {
         }
         
         return "AlumnoIndex";
+    }
+    
+    @GetMapping("alumnoDetail/{idAlumno}")
+    public String AlumnoDetail(@PathVariable int idAlumno, Model model){
+        
+        /*
+        alumnoDAOImplementation.GetDetail(idAlumno);
+        vista que muestre info alumno y una tabla con sus direcciones
+        */
+        
+        return "AlumnoDetail";
     }
 }
