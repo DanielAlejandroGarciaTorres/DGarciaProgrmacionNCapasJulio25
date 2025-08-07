@@ -68,15 +68,15 @@
                 <div class="row mb-3">
                     <div class="col-md-8">
                         <label class="form-label fw-bold">Calle</label>
-                        <input type="text" class="form-control" placeholder="Calle">
+                        <input type="text" class="form-control" placeholder="Calle" th:field="*{Direcciones[0].Calle}">
                     </div>
                     <div class="col-md-2">
                         <label class="form-label fw-bold"># Interior</label>
-                        <input type="text" class="form-control" placeholder="# int.">
+                        <input type="text" class="form-control" placeholder="# int." th:field="*{Direcciones[0].NumeroInterior}">
                     </div>
                     <div class="col-md-2">
                         <label class="form-label fw-bold"># Exterior</label>
-                        <input type="text" class="form-control" placeholder="# ext.">
+                        <input type="text" class="form-control" placeholder="# ext." th:field="*{Direcciones[0].NumeroExterior}">
                     </div>
                 </div>
 
@@ -84,7 +84,7 @@
 
                     <div class="col-md-3">
                         <label for="colonia" class="form-label fw-bold">Colonia</label>
-                        <input id="colonia" type="text" class="form-control" placeholder="Colonia">
+                        <input id="colonia" type="text" class="form-control" placeholder="Colonia" th:field="*{Direcciones[0].Colonia.IdColonia}">
                     </div>
 
                 </div>

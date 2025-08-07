@@ -196,10 +196,10 @@ public class AlumnoDAOImplementation implements IAlumnoDAO {
                 callablestatement.setString(3, alumno.getApellidoMaterno());
                 callablestatement.setString(4, alumno.getUserName());
                 callablestatement.setInt(5, alumno.Semestre.getIdSemestre());
-                callablestatement.setString(6, "Calle prueba");
-                callablestatement.setString(7, "15");
-                callablestatement.setString(8, "101 A");
-                callablestatement.setInt(9, 1);
+                callablestatement.setString(6, alumno.Direcciones.get(0).getCalle());
+                callablestatement.setString(7, alumno.Direcciones.get(0).getNumeroInterior());
+                callablestatement.setString(8, alumno.Direcciones.get(0).getNumeroExterior());
+                callablestatement.setInt(9, alumno.Direcciones.get(0).Colonia.getIdColonia());
 
                 int isCorrect = callablestatement.executeUpdate();
 

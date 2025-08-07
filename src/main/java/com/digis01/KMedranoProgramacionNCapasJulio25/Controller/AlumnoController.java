@@ -15,53 +15,50 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("alumno")
 public class AlumnoController {
-    
+
     @Autowired
     private AlumnoDAOImplementation alumnoDAOImplementation;
-    
+
     @GetMapping // verbo http GET, POST, PUT, DELETE, PATCH
-    public String Index(Model model){
+    public String Index(Model model) {
         Result result = alumnoDAOImplementation.GetAll();
-        
+
         if (result.correct) {
             model.addAttribute("alumnos", result.objects);
-        } else  {
+        } else {
             model.addAttribute("alumnos", null);
         }
-        
+
         return "AlumnoIndex";
     }
-    
+
     @GetMapping("alumnoDetail/{idAlumno}")
-    public String AlumnoDetail(@PathVariable int idAlumno, Model model){
-        
+    public String AlumnoDetail(@PathVariable int idAlumno, Model model) {
+
         Result result = alumnoDAOImplementation.DireccionesByIdAlumno(idAlumno);
-        
+
         if (result.correct) {
             model.addAttribute("alumno", result.object);
         } else {
             return "Error";
         }
-        
+
         return "AlumnoDetail";
     }
-    
-    
-    
-    
+
     @GetMapping("add") // localhost:8081/alumno/add
-    public String add(Model model){
-        
+    public String add(Model model) {
+
         model.addAttribute("Alumno", new Alumno());
-        
+
         return "AlumnoForm";
     }
-    
+
     //Proceso de agregado
     @PostMapping("add") // localhost:8081/alumno/add
-    public void Add(@ModelAttribute Alumno alumno){
-    
-    Result result = alumnoDAOImplementation.Add(alumno);
-    
+    public String Add(@ModelAttribute Alumno alumno) {
+
+        Result result = alumnoDAOImplementation.Add(alumno);
+        return "redirect:/alumno";
     }
 }

@@ -63,6 +63,22 @@ public class Alumno {
     public void setUserName(String UserName) {
         this.UserName = UserName;
     }
+
+    public Semestre getSemestre() {
+        return Semestre;
+    }
+
+    public void setSemestre(Semestre Semestre) {
+        this.Semestre = Semestre;
+    }
+
+    public List<Direccion> getDirecciones() {
+        return Direcciones;
+    }
+
+    public void setDirecciones(List<Direccion> Direcciones) {
+        this.Direcciones = Direcciones;
+    }
     
-   
+    
 }   
