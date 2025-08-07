@@ -182,5 +182,45 @@ public class AlumnoDAOImplementation implements IAlumnoDAO {
 
         return result;
     }
+    
+    @Override
+    public Result Add(Alumno alumno) {
+
+        Result result = new Result();
+
+        try {
+            result.correct = jdbcTemplate.execute("CALL AlumnoAdd(?,?,?,?,?,?,?,?,?)", (CallableStatementCallback<Boolean>) callablestatement -> {
+
+                callablestatement.setString(1, alumno.getNombre());
+                callablestatement.setString(2, alumno.getApellidoPaterno());
+                callablestatement.setString(3, alumno.getApellidoMaterno());
+                callablestatement.setString(4, alumno.getUserName());
+                callablestatement.setInt(5, alumno.Semestre.getIdSemestre());
+                callablestatement.setString(6, "Calle prueba");
+                callablestatement.setString(7, "15");
+                callablestatement.setString(8, "101 A");
+                callablestatement.setInt(9, 1);
+
+                int isCorrect = callablestatement.executeUpdate();
+
+                if (isCorrect == -1) {
+
+                    return true;
+                }
+                
+                return false;
+            });
+
+        } catch (Exception ex) {
+            result.correct = false;
+            result.errorMessage = ex.getLocalizedMessage();
+            result.ex = ex;
+
+        }
+
+        return result;
+
+    }
+
 
 }
