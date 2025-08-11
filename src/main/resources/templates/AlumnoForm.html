@@ -25,7 +25,7 @@
         <div class="container">
 
             <form method="post" th:object="${Alumno}" th:action="@{/alumno/add}">
-                
+
                 <div class="row">
                     <div class="col-md-4 text-center d-flex flex-column align-items-center">
                         <div class="card p-3 w-100 h-100">
@@ -46,7 +46,12 @@
                                 <div class="col mb-3">
                                     <label for="ApellidoPaternoAlumno" class="form-label fw-bold">Apellido Paterno</label>
                                     <input id="ApellidoPaternoAlumno" type="text" class="form-control" placeholder="Apellido Paterno" th:field="*{ApellidoPaterno}">
-                                    
+                                    <span class="text-danger"
+                                          th:if="${#fields.hasErrors('ApellidoPaterno')}"
+                                          th:errors="*{ApellidoPaterno}">
+                                        Message error
+                                    </span>
+
                                 </div>
                                 <div class="col mb-3">
                                     <label for="ApellidoMaternoAlumno" class="form-label fw-bold">Apellido Materno</label>

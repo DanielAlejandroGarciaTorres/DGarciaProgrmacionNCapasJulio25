@@ -3,9 +3,11 @@ package com.digis01.KMedranoProgramacionNCapasJulio25.Controller;
 import com.digis01.KMedranoProgramacionNCapasJulio25.DAO.AlumnoDAOImplementation;
 import com.digis01.KMedranoProgramacionNCapasJulio25.ML.Alumno;
 import com.digis01.KMedranoProgramacionNCapasJulio25.ML.Result;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -56,9 +58,16 @@ public class AlumnoController {
 
     //Proceso de agregado
     @PostMapping("add") // localhost:8081/alumno/add
-    public String Add(@ModelAttribute Alumno alumno) {
+    public String Add(@Valid @ModelAttribute("Alumno") Alumno alumno,
+            BindingResult bindingResult,
+            Model model) {
 
-        Result result = alumnoDAOImplementation.Add(alumno);
-        return "redirect:/alumno";
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("Alumno", alumno);
+            return "AlumnoForm";
+        } else {
+            Result result = alumnoDAOImplementation.Add(alumno);
+            return "redirect:/alumno";
+        }
     }
 }

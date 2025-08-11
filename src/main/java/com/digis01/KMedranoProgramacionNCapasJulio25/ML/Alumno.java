@@ -1,16 +1,23 @@
 package com.digis01.KMedranoProgramacionNCapasJulio25.ML;
 
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import java.util.List;
 
 public class Alumno {
     
     private int IdAlumno;
     private String Nombre;
+    @Size(min = 2, max = 20, message = "Texto de entre 2 y 20 letras")
+    @NotEmpty(message = "Información necesaria")
     private String ApellidoPaterno;
     private String ApellidoMaterno;
     private String UserName;
     public Semestre Semestre; // propiedad de navegación (No ocupa setter ni getter)
     public List<Direccion> Direcciones;
+    
+    
     
     public Alumno(){}
 
