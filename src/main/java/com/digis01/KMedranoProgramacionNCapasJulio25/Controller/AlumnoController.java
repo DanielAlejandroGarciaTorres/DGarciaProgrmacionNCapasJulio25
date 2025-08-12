@@ -1,6 +1,7 @@
 package com.digis01.KMedranoProgramacionNCapasJulio25.Controller;
 
 import com.digis01.KMedranoProgramacionNCapasJulio25.DAO.AlumnoDAOImplementation;
+import com.digis01.KMedranoProgramacionNCapasJulio25.DAO.SemestreDAOImplementatiton;
 import com.digis01.KMedranoProgramacionNCapasJulio25.ML.Alumno;
 import com.digis01.KMedranoProgramacionNCapasJulio25.ML.Result;
 import jakarta.validation.Valid;
@@ -21,6 +22,9 @@ public class AlumnoController {
     @Autowired
     private AlumnoDAOImplementation alumnoDAOImplementation;
 
+    @Autowired
+    private SemestreDAOImplementatiton semestreDAOImplementatiton;
+    
     @GetMapping // verbo http GET, POST, PUT, DELETE, PATCH
     public String Index(Model model) {
         Result result = alumnoDAOImplementation.GetAll();
@@ -50,7 +54,9 @@ public class AlumnoController {
 
     @GetMapping("add") // localhost:8081/alumno/add
     public String add(Model model) {
-
+//        Result result = semestreDAOImplementatiton.GetAll();
+        
+        model.addAttribute("semestres", semestreDAOImplementatiton.GetAll().objects);
         model.addAttribute("Alumno", new Alumno());
 
         return "AlumnoForm";
