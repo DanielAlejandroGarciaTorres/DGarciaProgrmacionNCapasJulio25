@@ -104,13 +104,34 @@
                 </div>
 
                 <div class="row"> 
+                        <div class="col-md-3">
+                            <label for="estadoddl" class="form-label fw-bold">Estado</label>
+                            <select id="estadoddl" class="form-select" aria-label="Default select example" >
+                                <option value=0 selected>Selecciona un estado</option>
+                                <option th:each="estado : ${estados}" th:value="${estado.IdEstado}" th:text="${estado.Nombre}">One</option>
+                            </select>
+                        </div>
 
-                    <div class="col-md-3">
-                        <label for="colonia" class="form-label fw-bold">Colonia</label>
-                        <input id="colonia" type="text" class="form-control" placeholder="Colonia" th:field="*{Direcciones[0].Colonia.IdColonia}">
+                        <div class="col-md-3">
+                            <label for="municipioddl" class="form-label fw-bold">Municipio</label>
+                            <select id="municipioddl" class="form-select" aria-label="Default select example" >
+                                <option value=0 selected>Selecciona un municipio</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label for="coloniaddl" class="form-label fw-bold">Colonia</label>
+                            <select id="coloniaddl" class="form-select" aria-label="Default select example">
+                                <option value=0 selected>Selecciona una colonia</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label for="CodigoPostal" class="form-label fw-bold">Codigo Postal</label>
+                            <input id="CodigoPostal" type="text" class="form-control" placeholder="Codigo Postal">
+
+                        </div>
                     </div>
-
-                </div>
 
 
                 <button type="submit" class="btn btn-success mt-4 w-100 fw-bold">Agregar</button>
@@ -144,6 +165,41 @@
             }
 
 
+               }else{
+                      $(input).removeClass("correct").addClass("error"); 
+                      $(input).siblings(".error-msg").text("Solo se permiten letras");
+               }
+               
+               
+           }
+            
+        $(document).ready(function (){
+            console.log("Hola, soy el cliente")
+            
+            $("#estadoddl").change(function (){
+               $.ajax({
+                   type:"GET",
+                   url:"/alumno/getMunicipiosByIdEstado/" + $("#estadoddl").val(),
+                   dataType: 'json',
+                   success: function (data, textStatus, jqXHR) {
+                        if(data.correct) {
+                            $("#municipioddl").empty();
+                            $("#municipioddl").append("<option value=0 selected>Selecciona un municipio</option>")
+                            $.each(data.objects, function (indice, municipio){
+                               $("#municipioddl").append("<option value=" + municipio.idMunicipio + "selected>"+ municipio.nombre+"</option>") 
+                            });
+                        } else {
+                            console.log("no tengo datos");
+                        }
+                   },
+                   error: function (jqXHR, textStatus, errorThrown) {
+                        alert("something went wrong");
+                   } 
+               });
+            });
+        });    
+           
+            
         </script>
     </body>
 

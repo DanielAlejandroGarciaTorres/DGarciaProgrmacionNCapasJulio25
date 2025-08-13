@@ -1,7 +1,8 @@
 package com.digis01.KMedranoProgramacionNCapasJulio25.Controller;
 
 import com.digis01.KMedranoProgramacionNCapasJulio25.DAO.AlumnoDAOImplementation;
-import com.digis01.KMedranoProgramacionNCapasJulio25.DAO.SemestreDAOImplementatiton;
+import com.digis01.KMedranoProgramacionNCapasJulio25.DAO.EstadoDAOImplementation;
+import com.digis01.KMedranoProgramacionNCapasJulio25.DAO.MunicipioDAOImplementation;
 import com.digis01.KMedranoProgramacionNCapasJulio25.ML.Alumno;
 import com.digis01.KMedranoProgramacionNCapasJulio25.ML.Result;
 import jakarta.validation.Valid;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequestMapping("alumno")
@@ -21,6 +23,12 @@ public class AlumnoController {
 
     @Autowired
     private AlumnoDAOImplementation alumnoDAOImplementation;
+    
+    @Autowired
+    private EstadoDAOImplementation estadoDAOImplementation;
+    
+    @Autowired
+    private MunicipioDAOImplementation municipioDAOImplementation;
 
     @Autowired
     private SemestreDAOImplementatiton semestreDAOImplementatiton;
@@ -75,5 +83,14 @@ public class AlumnoController {
             Result result = alumnoDAOImplementation.Add(alumno);
             return "redirect:/alumno";
         }
+    }
+    
+    //getMunicipioByEstado?IdEstado=7 -- requestParam
+    //getMunicipioByestado/7 -- pathVariable
+    @GetMapping("getMunicipiosByIdEstado/{IdEstado}")
+    @ResponseBody // retorne un dato estructurado - JSON
+    public Result MunicipioByEstado(@PathVariable int IdEstado){
+      
+        return municipioDAOImplementation.MunicipioByEstado(IdEstado);
     }
 }
