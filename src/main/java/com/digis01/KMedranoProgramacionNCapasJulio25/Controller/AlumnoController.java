@@ -3,6 +3,7 @@ package com.digis01.KMedranoProgramacionNCapasJulio25.Controller;
 import com.digis01.KMedranoProgramacionNCapasJulio25.DAO.AlumnoDAOImplementation;
 import com.digis01.KMedranoProgramacionNCapasJulio25.DAO.EstadoDAOImplementation;
 import com.digis01.KMedranoProgramacionNCapasJulio25.DAO.MunicipioDAOImplementation;
+import com.digis01.KMedranoProgramacionNCapasJulio25.DAO.SemestreDAOImplementatiton;
 import com.digis01.KMedranoProgramacionNCapasJulio25.ML.Alumno;
 import com.digis01.KMedranoProgramacionNCapasJulio25.ML.Result;
 import jakarta.validation.Valid;
