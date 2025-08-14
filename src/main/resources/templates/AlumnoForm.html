@@ -26,6 +26,9 @@
 
             <form method="post" th:object="${Alumno}" th:action="@{/alumno/add}">
 
+                <input type="hidden" th:field="${IdAlumno}">
+                <input type="hidden" th:field="${Direcciones[0].IdDireccion}">
+                
                 <div class="row">
                     <div class="col-md-4 text-center d-flex flex-column align-items-center">
                         <div class="card p-3 w-100 h-100">

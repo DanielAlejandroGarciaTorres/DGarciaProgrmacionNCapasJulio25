@@ -11,7 +11,7 @@
         <div class="container">
 
             
-            <a href="/alumno/add">Registrar un alumno</a>
+            <a href="/alumno/action/{IdAlumno}(IdAlumno=0)}">Registrar un alumno</a>
             
             <table class="table table-hover">
                 <thead class="table-dark">
@@ -22,7 +22,7 @@
                 </thead>
                 <tbody>
                     <tr th:each="alumno : ${alumnos}">
-                        <td><a th:href="@{/alumno/alumnoDetail/{idAlumno}(idAlumno = ${alumno.IdAlumno})}" class="btn btn-warning"><i class="bi bi-pencil-square"></i></a><a class="btn btn-danger"><i class="bi bi-trash3-fill"></i></a></td>
+                        <td><a th:href="@{/alumno/action/{idAlumno}(idAlumno = ${alumno.IdAlumno})}" class="btn btn-warning"><i class="bi bi-pencil-square"></i></a><a class="btn btn-danger"><i class="bi bi-trash3-fill"></i></a></td>
                         <td th:text="|${alumno.Nombre} ${alumno.ApellidoPaterno} ${alumno.ApellidoMaterno}|"></td>
                         <td>Contacto...</td>
                         <td><ul><li th:each="direccion : ${alumno.Direcciones}" th:text="|${direccion.Calle} ${direccion.Colonia.Nombre}|"></li></ul></td>
