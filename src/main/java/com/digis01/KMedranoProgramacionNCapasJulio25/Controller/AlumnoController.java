@@ -5,8 +5,13 @@ import com.digis01.KMedranoProgramacionNCapasJulio25.DAO.EstadoDAOImplementation
 import com.digis01.KMedranoProgramacionNCapasJulio25.DAO.MunicipioDAOImplementation;
 import com.digis01.KMedranoProgramacionNCapasJulio25.DAO.SemestreDAOImplementatiton;
 import com.digis01.KMedranoProgramacionNCapasJulio25.ML.Alumno;
+import com.digis01.KMedranoProgramacionNCapasJulio25.ML.Colonia;
+import com.digis01.KMedranoProgramacionNCapasJulio25.ML.Direccion;
+import com.digis01.KMedranoProgramacionNCapasJulio25.ML.Estado;
+import com.digis01.KMedranoProgramacionNCapasJulio25.ML.Municipio;
 import com.digis01.KMedranoProgramacionNCapasJulio25.ML.Result;
 import jakarta.validation.Valid;
+import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,6 +21,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
@@ -60,7 +66,7 @@ public class AlumnoController {
             Result result = alumnoDAOImplementation.DireccionesByIdAlumno(IdAlumno);
 
             if (result.correct) {
-                model.addAttribute("alumno", result.object);
+                model.addAttribute("Alumno", result.object);
             } else {
                 return "Error";
             }
@@ -68,6 +74,37 @@ public class AlumnoController {
             return "AlumnoDetail";
         }
 
+    }
+    
+    @GetMapping("formEditable")
+    public String formEditable(
+                @RequestParam int IdAlumno, 
+                @RequestParam(required = false) Integer IdDireccion,
+                Model model){
+        
+        if (IdDireccion == null) {  // Editar Usuario
+            /* recuperar información del usuario*/
+            Alumno alumno = new Alumno(); //esto lo haré manual
+            alumno.setIdAlumno(IdAlumno);
+            alumno.Direcciones = new ArrayList<>();
+            alumno.Direcciones.add(new Direccion(-1));
+            model.addAttribute("Alumno", alumno);
+        } else if (IdDireccion == 0) {//Agregar direccion
+            model.addAttribute("Alumno", new Alumno(IdAlumno));
+        } else { // editar direccion
+            /*recuperar información de la direccion*/
+            Alumno alumno = new Alumno(2);
+            alumno.Direcciones = new ArrayList<>();
+            Direccion direccion = new Direccion(2, "Test", "15", "422", new Colonia(1));
+            direccion.Colonia.Municipio = new Municipio();
+            direccion.Colonia.Municipio.Estado = new Estado();
+            direccion.Colonia.Municipio.Estado.setIdEstado(3);
+            alumno.Direcciones.add(direccion);
+            model.addAttribute("Alumno", alumno);
+            model.addAttribute("estados", estadoDAOImplementation.GetAllEstado().objects);
+        }
+        
+        return "AlumnoForm";
     }
 
     //Proceso de agregado

@@ -26,118 +26,123 @@
 
             <form method="post" th:object="${Alumno}" th:action="@{/alumno/add}">
 
-                <input type="hidden" th:field="${IdAlumno}">
-                <input type="hidden" th:field="${Direcciones[0].IdDireccion}">
-                
-                <div class="row">
-                    <div class="col-md-4 text-center d-flex flex-column align-items-center">
-                        <div class="card p-3 w-100 h-100">
-                            <label for="imagenFile" class="form-label fw-bold">Imagen</label>
-                            <input type="file" class="form-control mb-2" name="imagenFile" id="imagenFile">
-                            <img id="previewImage" style="max-width: 300px; max-height: auto" class="mx-auto" src="https://static.vecteezy.com/system/resources/previews/018/765/757/non_2x/user-profile-icon-in-flat-style-member-avatar-illustration-on-isolated-background-human-permission-sign-business-concept-vector.jpg"/>
+                <input type="hidden" th:field="*{IdAlumno}">
+                <input type="hidden" th:field="*{Direcciones[0].IdDireccion}">
+
+                <span>
+
+                    <div class="row" th:if="*{(IdAlumno == 0 && Direcciones[0].IdDireccion == 0)
+                         || (IdAlumno > 0 && Direcciones[0].IdDireccion == -1)}">
+                        <div class="col-md-4 text-center d-flex flex-column align-items-center">
+                            <div class="card p-3 w-100 h-100">
+                                <label for="imagenFile" class="form-label fw-bold">Imagen</label>
+                                <input type="file" class="form-control mb-2" name="imagenFile" id="imagenFile">
+                                <img id="previewImage" style="max-width: 300px; max-height: auto" class="mx-auto" src="https://static.vecteezy.com/system/resources/previews/018/765/757/non_2x/user-profile-icon-in-flat-style-member-avatar-illustration-on-isolated-background-human-permission-sign-business-concept-vector.jpg"/>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card p-3 h-100">
+                                <div class="mb-3">
+                                    <label for="NombreAlumno" class="form-label fw-bold">Nombre</label>
+                                    <input id="NombreAlumno" type="text" class="form-control" placeholder="Nombre" th:field="*{Nombre}" onkeypress="SoloLetras(event, this)" >
+
+                                    <span class="error-msg"></span>
+                                </div>
+                                <div class="row">
+                                    <div class="col mb-3">
+                                        <label for="ApellidoPaternoAlumno" class="form-label fw-bold">Apellido Paterno</label>
+                                        <input id="ApellidoPaternoAlumno" type="text" class="form-control" placeholder="Apellido Paterno" th:field="*{ApellidoPaterno}">
+                                        <span class="text-danger"
+                                              th:if="${#fields.hasErrors('ApellidoPaterno')}"
+                                              th:errors="*{ApellidoPaterno}">
+                                            Message error
+                                        </span>
+
+                                    </div>
+                                    <div class="col mb-3">
+                                        <label for="ApellidoMaternoAlumno" class="form-label fw-bold">Apellido Materno</label>
+                                        <input id="ApellidoMaternoAlumno" type="text" class="form-control" placeholder="Apellido Materno" th:field="*{ApellidoMaterno}">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col mb-3">
+                                        <label for="UserNameAlumno" class="form-label fw-bold">Username</label>
+                                        <input id="UserNameAlumno" type="text" class="form-control" placeholder="Username" th:field="*{UserName}">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col mb-3">
+                                        <label for="EmailAlumno" class="form-label fw-bold">Email</label>
+                                        <input id="EmailAlumno" type="email" class="form-control" placeholder="Email">
+                                    </div>
+                                    <div class="col mb-3">
+                                        <label for="PasswordAlumno" class="form-label fw-bold">Password</label>
+                                        <input id="PasswordAlumno" type="password" class="form-control" placeholder="Contraseña">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <label for="semestreAlumno" class="form-label fw-bold">Semestre</label>
+                                    <!--<input id="semestreAlumno" type="text" class="form-control" placeholder="Semestre" th:field="*{Semestre.IdSemestre}">-->
+                                    <select class="form-select" aria-label="Default select example">
+                                        <option value=0 selected>Open this select menu</option>
+                                        <option th:each="semestre : ${semestres}" th:text="${semestre.nombre}" th:value="${semestre.IdSemestre}">One</option>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-md-8">
-                        <div class="card p-3 h-100">
-                            <div class="mb-3">
-                                <label for="NombreAlumno" class="form-label fw-bold">Nombre</label>
-                                <input id="NombreAlumno" type="text" class="form-control" placeholder="Nombre" th:field="*{Nombre}" onkeypress="SoloLetras(event, this)" >
 
-                                <span class="error-msg"></span>
+                    <hr>
+                    <div th:if="*{(IdAlumno == 0 && Direcciones[0].IdDireccion == 0)
+                         || (IdAlumno > 0 && Direcciones[0].IdDireccion == 0)
+                         || (IdAlumno > 0 && Direcciones[0].IdDireccion > 0)}">
+                        <div class="row mb-3">
+                            <div class="col-md-8">
+                                <label class="form-label fw-bold">Calle</label>
+                                <input type="text" class="form-control" placeholder="Calle" th:field="*{Direcciones[0].Calle}">
                             </div>
-                            <div class="row">
-                                <div class="col mb-3">
-                                    <label for="ApellidoPaternoAlumno" class="form-label fw-bold">Apellido Paterno</label>
-                                    <input id="ApellidoPaternoAlumno" type="text" class="form-control" placeholder="Apellido Paterno" th:field="*{ApellidoPaterno}">
-                                    <span class="text-danger"
-                                          th:if="${#fields.hasErrors('ApellidoPaterno')}"
-                                          th:errors="*{ApellidoPaterno}">
-                                        Message error
-                                    </span>
+                            <div class="col-md-2">
+                                <label class="form-label fw-bold"># Interior</label>
+                                <input type="text" class="form-control" placeholder="# int." th:field="*{Direcciones[0].NumeroInterior}">
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label fw-bold"># Exterior</label>
+                                <input type="text" class="form-control" placeholder="# ext." th:field="*{Direcciones[0].NumeroExterior}">
+                            </div>
+                        </div>
 
-                                </div>
-                                <div class="col mb-3">
-                                    <label for="ApellidoMaternoAlumno" class="form-label fw-bold">Apellido Materno</label>
-                                    <input id="ApellidoMaternoAlumno" type="text" class="form-control" placeholder="Apellido Materno" th:field="*{ApellidoMaterno}">
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col mb-3">
-                                    <label for="UserNameAlumno" class="form-label fw-bold">Username</label>
-                                    <input id="UserNameAlumno" type="text" class="form-control" placeholder="Username" th:field="*{UserName}">
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col mb-3">
-                                    <label for="EmailAlumno" class="form-label fw-bold">Email</label>
-                                    <input id="EmailAlumno" type="email" class="form-control" placeholder="Email">
-                                </div>
-                                <div class="col mb-3">
-                                    <label for="PasswordAlumno" class="form-label fw-bold">Password</label>
-                                    <input id="PasswordAlumno" type="password" class="form-control" placeholder="Contraseña">
-                                </div>
-                            </div>
-                            <div class="row">
-                                <label for="semestreAlumno" class="form-label fw-bold">Semestre</label>
-                                <!--<input id="semestreAlumno" type="text" class="form-control" placeholder="Semestre" th:field="*{Semestre.IdSemestre}">-->
-                                <select class="form-select" aria-label="Default select example">
-                                    <option value=0 selected>Open this select menu</option>
-                                    <option th:each="semestre : ${semestres}" th:text="${semestre.nombre}" th:value="${semestre.IdSemestre}">One</option>
+                        <div class="row"> 
+                            <div class="col-md-3">
+                                <label for="estadoddl" class="form-label fw-bold">Estado</label>
+                                <select id="estadoddl" class="form-select" aria-label="Default select example" th:field="*{Direcciones[0].Colonia.Municipio.Estado.IdEstado}">
+                                    <option value=0 selected>Selecciona un estado</option>
+                                    <option th:each="estado : ${estados}" th:value="${estado.IdEstado}" th:text="${estado.Nombre}">One</option>
                                 </select>
                             </div>
-                        </div>
-                    </div>
-                </div>
 
-                <hr>
+                            <div class="col-md-3">
+                                <label for="municipioddl" class="form-label fw-bold">Municipio</label>
+                                <select id="municipioddl" class="form-select" aria-label="Default select example" >
+                                    <option value=0 selected>Selecciona un municipio</option>
+                                </select>
+                            </div>
 
-                <div class="row mb-3">
-                    <div class="col-md-8">
-                        <label class="form-label fw-bold">Calle</label>
-                        <input type="text" class="form-control" placeholder="Calle" th:field="*{Direcciones[0].Calle}">
-                    </div>
-                    <div class="col-md-2">
-                        <label class="form-label fw-bold"># Interior</label>
-                        <input type="text" class="form-control" placeholder="# int." th:field="*{Direcciones[0].NumeroInterior}">
-                    </div>
-                    <div class="col-md-2">
-                        <label class="form-label fw-bold"># Exterior</label>
-                        <input type="text" class="form-control" placeholder="# ext." th:field="*{Direcciones[0].NumeroExterior}">
-                    </div>
-                </div>
+                            <div class="col-md-3">
+                                <label for="coloniaddl" class="form-label fw-bold">Colonia</label>
+                                <select id="coloniaddl" class="form-select" aria-label="Default select example">
+                                    <option value=0 selected>Selecciona una colonia</option>
+                                </select>
+                            </div>
 
-                <div class="row"> 
-                        <div class="col-md-3">
-                            <label for="estadoddl" class="form-label fw-bold">Estado</label>
-                            <select id="estadoddl" class="form-select" aria-label="Default select example" >
-                                <option value=0 selected>Selecciona un estado</option>
-                                <option th:each="estado : ${estados}" th:value="${estado.IdEstado}" th:text="${estado.Nombre}">One</option>
-                            </select>
+                            <div class="col-md-3">
+                                <label for="CodigoPostal" class="form-label fw-bold">Codigo Postal</label>
+                                <input id="CodigoPostal" type="text" class="form-control" placeholder="Codigo Postal">
+
+                            </div>
                         </div>
 
-                        <div class="col-md-3">
-                            <label for="municipioddl" class="form-label fw-bold">Municipio</label>
-                            <select id="municipioddl" class="form-select" aria-label="Default select example" >
-                                <option value=0 selected>Selecciona un municipio</option>
-                            </select>
-                        </div>
-
-                        <div class="col-md-3">
-                            <label for="coloniaddl" class="form-label fw-bold">Colonia</label>
-                            <select id="coloniaddl" class="form-select" aria-label="Default select example">
-                                <option value=0 selected>Selecciona una colonia</option>
-                            </select>
-                        </div>
-
-                        <div class="col-md-3">
-                            <label for="CodigoPostal" class="form-label fw-bold">Codigo Postal</label>
-                            <input id="CodigoPostal" type="text" class="form-control" placeholder="Codigo Postal">
-
-                        </div>
                     </div>
-
-
-                <button type="submit" class="btn btn-success mt-4 w-100 fw-bold">Agregar</button>
+                    <button type="submit" class="btn btn-success mt-4 w-100 fw-bold">Agregar</button>
             </form>
 
         </div>
@@ -147,62 +152,60 @@
 
             function SoloLetras(event, input) {
 
-                let key = event.key;
-                let ascii = event.keyCode;
+            let key = event.key;
+            let ascii = event.keyCode;
+            let regex = new RegExp('^[a-zA-Z]+$');
+            if (regex.test(key)) {
 
-                let regex = new RegExp('^[a-zA-Z]+$');
+            if (ascii >= 65 && ascii <= 90) {
 
-                if (regex.test(key)) {
+            $(input).removeClass("error").addClass("correct");
+            }
 
-                    if (ascii >= 65 && ascii <= 90) {
-
-                        $(input).removeClass("error").addClass("correct");
-                    }
-
-                } else {
-                    $(input).removeClass("correct").addClass("error");
-                    $(input).siblings(".error-msg").text("Solo se permiten letras");
-                }
+            } else {
+            $(input).removeClass("correct").addClass("error");
+            $(input).siblings(".error-msg").text("Solo se permiten letras");
+            }
 
 
             }
 
 
-               }else{
-                      $(input).removeClass("correct").addClass("error"); 
-                      $(input).siblings(".error-msg").text("Solo se permiten letras");
-               }
-               
-               
-           }
-            
-        $(document).ready(function (){
+            } else{
+            $(input).removeClass("correct").addClass("error");
+            $(input).siblings(".error-msg").text("Solo se permiten letras");
+            }
+
+
+            }
+
+            $(document).ready(function (){
             console.log("Hola, soy el cliente")
-            
-            $("#estadoddl").change(function (){
-               $.ajax({
-                   type:"GET",
-                   url:"/alumno/getMunicipiosByIdEstado/" + $("#estadoddl").val(),
-                   dataType: 'json',
-                   success: function (data, textStatus, jqXHR) {
-                        if(data.correct) {
-                            $("#municipioddl").empty();
-                            $("#municipioddl").append("<option value=0 selected>Selecciona un municipio</option>")
+
+                    $("#estadoddl").change(function (){
+            $.ajax({
+            type:"GET",
+                    url:"/alumno/getMunicipiosByIdEstado/" + $("#estadoddl").val(),
+                    dataType: 'json',
+                    success: function (data, textStatus, jqXHR) {
+                    if (data.correct) {
+                    $("#municipioddl").empty();
+                    $("#municipioddl").append("<option value=0 selected>Selecciona un municipio</option>")
                             $.each(data.objects, function (indice, municipio){
-                               $("#municipioddl").append("<option value=" + municipio.idMunicipio + "selected>"+ municipio.nombre+"</option>") 
+                            $("#municipioddl").append("<option value=" + municipio.idMunicipio + "selected>" + municipio.nombre + "</option>")
                             });
-                        } else {
-                            console.log("no tengo datos");
-                        }
-                   },
-                   error: function (jqXHR, textStatus, errorThrown) {
-                        alert("something went wrong");
-                   } 
-               });
+                    } else {
+                    console.log("no tengo datos");
+                    }
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                    alert("something went wrong");
+                    }
             });
-        });    
-           
-            
+            });
+            });
+
+
         </script>
     </body>
 

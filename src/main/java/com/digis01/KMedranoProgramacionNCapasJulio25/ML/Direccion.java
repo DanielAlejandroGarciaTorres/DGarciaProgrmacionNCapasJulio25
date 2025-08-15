@@ -8,7 +8,21 @@ public class Direccion {
     private String NumeroExterior;
     public Colonia Colonia;
 
-    //public Direccion(){}
+    public Direccion(){}
+
+    public Direccion(int IdDireccion) {
+        this.IdDireccion = IdDireccion;
+    }
+
+    public Direccion(int IdDireccion, String Calle, String NumeroInterior, String NumeroExterior, Colonia Colonia) {
+        this.IdDireccion = IdDireccion;
+        this.Calle = Calle;
+        this.NumeroInterior = NumeroInterior;
+        this.NumeroExterior = NumeroExterior;
+        this.Colonia = Colonia;
+    }
+    
+    
     
     public int getIdDireccion() {
         return IdDireccion;
