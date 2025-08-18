@@ -12,6 +12,7 @@ import com.digis01.KMedranoProgramacionNCapasJulio25.ML.Municipio;
 import com.digis01.KMedranoProgramacionNCapasJulio25.ML.Result;
 import jakarta.validation.Valid;
 import java.util.ArrayList;
+import java.util.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 @Controller
 @RequestMapping("alumno")
@@ -75,13 +77,13 @@ public class AlumnoController {
         }
 
     }
-    
+
     @GetMapping("formEditable")
     public String formEditable(
-                @RequestParam int IdAlumno, 
-                @RequestParam(required = false) Integer IdDireccion,
-                Model model){
-        
+            @RequestParam int IdAlumno,
+            @RequestParam(required = false) Integer IdDireccion,
+            Model model) {
+
         if (IdDireccion == null) {  // Editar Usuario
             /* recuperar información del usuario*/
             Alumno alumno = new Alumno(); //esto lo haré manual
@@ -103,7 +105,7 @@ public class AlumnoController {
             model.addAttribute("Alumno", alumno);
             model.addAttribute("estados", estadoDAOImplementation.GetAllEstado().objects);
         }
-        
+
         return "AlumnoForm";
     }
 
@@ -111,12 +113,31 @@ public class AlumnoController {
     @PostMapping("add") // localhost:8081/alumno/add
     public String Add(@Valid @ModelAttribute("Alumno") Alumno alumno,
             BindingResult bindingResult,
-            Model model) {
+            Model model,
+            @RequestParam("imagenFile") MultipartFile imagen) {
 
         if (bindingResult.hasErrors()) {
             model.addAttribute("Alumno", alumno);
             return "AlumnoForm";
         } else {
+
+            if (imagen != null) {
+                String nombre = imagen.getOriginalFilename();
+                //archivo.jpg
+                //[archivo,jpg]
+                String extension = nombre.split("\\.")[1];
+                if (extension.equals("jpg")) {
+                    try {
+                        byte[] bytes = imagen.getBytes();
+                        String base64Image = Base64.getEncoder().encodeToString(bytes);
+                        alumno.setImagen(base64Image);
+                    } catch (Exception ex) {
+                        System.out.println("Error");
+                    }
+
+                }
+            }
+
             Result result = alumnoDAOImplementation.Add(alumno);
             return "redirect:/alumno";
         }

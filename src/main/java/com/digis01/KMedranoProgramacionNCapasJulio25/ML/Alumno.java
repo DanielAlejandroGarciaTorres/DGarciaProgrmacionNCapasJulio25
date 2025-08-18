@@ -16,7 +16,7 @@ public class Alumno {
     private String UserName;
     public Semestre Semestre; // propiedad de navegación (No ocupa setter ni getter)
     public List<Direccion> Direcciones;
-    
+    private String Imagen;
     
     
     public Alumno(){}
@@ -91,6 +91,14 @@ public class Alumno {
 
     public void setDirecciones(List<Direccion> Direcciones) {
         this.Direcciones = Direcciones;
+    }
+
+    public String getImagen() {
+        return Imagen;
+    }
+
+    public void setImagen(String Imagen) {
+        this.Imagen = Imagen;
     }
     
     
