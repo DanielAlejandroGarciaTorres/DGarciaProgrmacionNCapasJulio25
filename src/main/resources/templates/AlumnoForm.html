@@ -83,7 +83,7 @@
                                 <div class="row">
                                     <label for="semestreAlumno" class="form-label fw-bold">Semestre</label>
                                     <!--<input id="semestreAlumno" type="text" class="form-control" placeholder="Semestre" th:field="*{Semestre.IdSemestre}">-->
-                                    <select class="form-select" aria-label="Default select example">
+                                    <select class="form-select" aria-label="Default select example" th:field="*{Semestre.IdSemestre}">
                                         <option value=0 selected>Open this select menu</option>
                                         <option th:each="semestre : ${semestres}" th:text="${semestre.nombre}" th:value="${semestre.IdSemestre}">One</option>
                                     </select>

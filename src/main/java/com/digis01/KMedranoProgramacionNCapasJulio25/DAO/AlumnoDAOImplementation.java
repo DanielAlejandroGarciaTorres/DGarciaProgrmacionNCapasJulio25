@@ -73,6 +73,7 @@ public class AlumnoDAOImplementation implements IAlumnoDAO {
                         alumno.Semestre = new Semestre();
                         alumno.Semestre.setIdSemestre(resultSet.getInt("IdSemestre"));
                         alumno.Semestre.setNombre(resultSet.getString("NombreSemestre"));
+                        alumno.setImagen(resultSet.getString("Imagen"));
 
                         int idDireccion;
                         if ((idDireccion = resultSet.getInt("IdDireccion")) != 0) {
@@ -189,17 +190,18 @@ public class AlumnoDAOImplementation implements IAlumnoDAO {
         Result result = new Result();
 
         try {
-            result.correct = jdbcTemplate.execute("CALL AlumnoAdd(?,?,?,?,?,?,?,?,?)", (CallableStatementCallback<Boolean>) callablestatement -> {
+            result.correct = jdbcTemplate.execute("CALL AlumnoAdd(?,?,?,?,?,?,?,?,?,?)", (CallableStatementCallback<Boolean>) callablestatement -> {
 
                 callablestatement.setString(1, alumno.getNombre());
                 callablestatement.setString(2, alumno.getApellidoPaterno());
                 callablestatement.setString(3, alumno.getApellidoMaterno());
                 callablestatement.setString(4, alumno.getUserName());
                 callablestatement.setInt(5, alumno.Semestre.getIdSemestre());
-                callablestatement.setString(6, alumno.Direcciones.get(0).getCalle());
-                callablestatement.setString(7, alumno.Direcciones.get(0).getNumeroInterior());
-                callablestatement.setString(8, alumno.Direcciones.get(0).getNumeroExterior());
-                callablestatement.setInt(9, alumno.Direcciones.get(0).Colonia.getIdColonia());
+                callablestatement.setString(6, alumno.getImagen());
+                callablestatement.setString(7, alumno.Direcciones.get(0).getCalle());
+                callablestatement.setString(8, alumno.Direcciones.get(0).getNumeroInterior());
+                callablestatement.setString(9, alumno.Direcciones.get(0).getNumeroExterior());
+                callablestatement.setInt(10, alumno.Direcciones.get(0).Colonia.getIdColonia());
 
                 int isCorrect = callablestatement.executeUpdate();
 
