@@ -164,11 +164,19 @@ public class AlumnoController {
     }
     
     @PostMapping("cargamasiva")
-    public String CargaMasiva(@RequestParam("archivo") MultipartFile file){
+    public String CargaMasiva(@RequestParam("archivo") MultipartFile file, Model model){
         
         if (file.getOriginalFilename().split("\\.")[1].equals("txt")){
             List<Alumno> alumnos = ProcesarTXT(file);
             List<ErrorCM> errores = ValidarDatos(alumnos);
+            
+            if (errores.isEmpty()) {
+                model.addAttribute("listaErrores", errores);
+                model.addAttribute("archivoCorrecto", true);
+            } else {
+                model.addAttribute("listaErrores", errores);
+                model.addAttribute("archivoCorrecto", false);
+            }
             
             //si lista errores diferente de vacio, intentar desplegar lista de errores en carga masiva
         } else {
@@ -208,8 +216,10 @@ public class AlumnoController {
         int linea = 1; 
         for (Alumno alumno : alumnos) {
             if (alumno.getNombre() == null || alumno.getNombre() == ""){
-                ErrorCM errorCM = new ErrorCM(linea, alumno.getNombre(), "Campo obligatorio");
-                errores.add(errorCM);
+                errores.add(new ErrorCM(linea, alumno.getNombre(), "Campo obligatorio")); 
+            }
+            if (alumno.getApellidoPaterno()== null || alumno.getApellidoPaterno()== ""){
+                errores.add(new ErrorCM(linea, alumno.getApellidoPaterno(), "Campo obligatorio")); 
             }
             linea ++;
         }

@@ -36,6 +36,31 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                 </form>
             </div>
 
+            <div th:if="${archivoCorrecto!= null}">
+                <div th:if="${listaErrores.isEmpty()}">
+                    <h4>Archivo correcto: </h4>
+                    <a th:href="@{/alumno/cargamasiva/procesar}" class="btn btn-success">Proesar archivo</a>
+                </div>
+                <div th:unless="${listaErrores.isEmpty()}">
+                    <h4>Archivo incorrecto: </h4>
+                    <table class="table table-responsive table-bordered">
+                        <thead class="table-dark">
+                        <th class="col-2">Linea</th>
+                        <th>Texto</th>
+                        <th>Error</th>
+                        </thead>
+                        <tbody>
+                            <tr th:each="error :${listaErrores}">
+                                <td th:text="${error.linea}"></td> 
+                                <td th:text="${error.dato}"></td> 
+                                <td th:text="${error.mensaje}"></td> 
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+
 
         </div>
 
