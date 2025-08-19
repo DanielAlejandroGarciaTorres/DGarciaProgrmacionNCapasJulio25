@@ -7,12 +7,18 @@ import com.digis01.KMedranoProgramacionNCapasJulio25.DAO.SemestreDAOImplementati
 import com.digis01.KMedranoProgramacionNCapasJulio25.ML.Alumno;
 import com.digis01.KMedranoProgramacionNCapasJulio25.ML.Colonia;
 import com.digis01.KMedranoProgramacionNCapasJulio25.ML.Direccion;
+import com.digis01.KMedranoProgramacionNCapasJulio25.ML.ErrorCM;
 import com.digis01.KMedranoProgramacionNCapasJulio25.ML.Estado;
 import com.digis01.KMedranoProgramacionNCapasJulio25.ML.Municipio;
 import com.digis01.KMedranoProgramacionNCapasJulio25.ML.Result;
+import com.digis01.KMedranoProgramacionNCapasJulio25.ML.Semestre;
 import jakarta.validation.Valid;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -150,5 +156,64 @@ public class AlumnoController {
     public Result MunicipioByEstado(@PathVariable int IdEstado) {
 
         return municipioDAOImplementation.MunicipioByEstado(IdEstado);
+    }
+    
+    @GetMapping("cargamasiva")
+    public String CargaMasiva(){
+        return "CargaMasiva";
+    }
+    
+    @PostMapping("cargamasiva")
+    public String CargaMasiva(@RequestParam("archivo") MultipartFile file){
+        
+        if (file.getOriginalFilename().split("\\.")[1].equals("txt")){
+            List<Alumno> alumnos = ProcesarTXT(file);
+            List<ErrorCM> errores = ValidarDatos(alumnos);
+            
+            //si lista errores diferente de vacio, intentar desplegar lista de errores en carga masiva
+        } else {
+             // excel
+        }
+        
+        return "CargaMasiva";
+    }
+    
+    private List<Alumno> ProcesarTXT(MultipartFile file){
+        try {
+            InputStream inputStream = file.getInputStream();
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+            
+            String linea = ""; 
+            List<Alumno> alumnos = new ArrayList<>();
+            while ((linea = bufferedReader.readLine()) != null) {                
+                String[] campos = linea.split("\\|");
+                Alumno alumno = new Alumno();
+                alumno.setNombre(campos[0]);
+                alumno.setApellidoPaterno(campos[1]);
+                alumno.setApellidoMaterno(campos[2]);
+                alumno.setUserName(campos[3]);
+                alumno.Semestre = new Semestre();
+                alumno.Semestre.setIdSemestre(Integer.parseInt(campos[4]));
+                alumnos.add(alumno);
+            }
+            return alumnos;
+        } catch (Exception ex){
+            System.out.println("error");
+            return null;
+        }
+    }
+    
+    private List<ErrorCM> ValidarDatos(List<Alumno> alumnos){
+        List<ErrorCM> errores = new ArrayList<>();
+        int linea = 1; 
+        for (Alumno alumno : alumnos) {
+            if (alumno.getNombre() == null || alumno.getNombre() == ""){
+                ErrorCM errorCM = new ErrorCM(linea, alumno.getNombre(), "Campo obligatorio");
+                errores.add(errorCM);
+            }
+            linea ++;
+        }
+        
+        return errores;
     }
 }
