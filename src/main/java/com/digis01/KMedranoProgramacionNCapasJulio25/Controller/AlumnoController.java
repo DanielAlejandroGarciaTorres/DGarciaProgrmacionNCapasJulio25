@@ -19,6 +19,9 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -181,6 +184,17 @@ public class AlumnoController {
             //si lista errores diferente de vacio, intentar desplegar lista de errores en carga masiva
         } else {
              // excel
+             List<Alumno> alumnos = ProcesarExcel(file);
+             List<ErrorCM> errores = ValidarDatos(alumnos);
+            
+            if (errores.isEmpty()) {
+                model.addAttribute("listaErrores", errores);
+                model.addAttribute("archivoCorrecto", true);
+            } else {
+                model.addAttribute("listaErrores", errores);
+                model.addAttribute("archivoCorrecto", false);
+            }        
+
         }
         
         return "CargaMasiva";
@@ -211,15 +225,42 @@ public class AlumnoController {
         }
     }
     
+    private List<Alumno> ProcesarExcel(MultipartFile file){
+        
+        List<Alumno> alumnos = new ArrayList<>();
+        
+        try (XSSFWorkbook workbook = new XSSFWorkbook(file.getInputStream())){
+            Sheet sheet = workbook.getSheetAt(0);
+            for (Row row : sheet) {
+                Alumno alumno = new Alumno();
+                alumno.setNombre(row.getCell(0) != null ?  row.getCell(0).toString() : "");
+                alumno.setApellidoPaterno(row.getCell(1).toString());
+                alumno.Semestre = new Semestre();
+                alumno.Semestre.setIdSemestre(row.getCell(4) != null ? (int) row.getCell(4).getNumericCellValue() : 0);
+                
+                alumnos.add(alumno);
+            }
+            return alumnos;
+        } catch (Exception ex) {
+            return null;
+        }
+        
+        
+    }
+    
     private List<ErrorCM> ValidarDatos(List<Alumno> alumnos){
         List<ErrorCM> errores = new ArrayList<>();
         int linea = 1; 
         for (Alumno alumno : alumnos) {
             if (alumno.getNombre() == null || alumno.getNombre() == ""){
-                errores.add(new ErrorCM(linea, alumno.getNombre(), "Campo obligatorio")); 
+                errores.add(new ErrorCM(linea, alumno.getNombre() == "" ? "vacio" : alumno.getNombre(), "Nombre es un campo obligatorio")); 
             }
             if (alumno.getApellidoPaterno()== null || alumno.getApellidoPaterno()== ""){
                 errores.add(new ErrorCM(linea, alumno.getApellidoPaterno(), "Campo obligatorio")); 
+            }
+            
+            if (alumno.Semestre.getIdSemestre() == 0) {
+                errores.add(new ErrorCM(linea, alumno.Semestre.getIdSemestre()+"", "Numero de colonia no valido"));
             }
             linea ++;
         }
