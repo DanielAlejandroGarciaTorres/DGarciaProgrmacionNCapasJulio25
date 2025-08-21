@@ -12,13 +12,21 @@ import com.digis01.KMedranoProgramacionNCapasJulio25.ML.Estado;
 import com.digis01.KMedranoProgramacionNCapasJulio25.ML.Municipio;
 import com.digis01.KMedranoProgramacionNCapasJulio25.ML.Result;
 import com.digis01.KMedranoProgramacionNCapasJulio25.ML.Semestre;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -167,15 +175,30 @@ public class AlumnoController {
     }
     
     @PostMapping("cargamasiva")
-    public String CargaMasiva(@RequestParam("archivo") MultipartFile file, Model model){
+    public String CargaMasiva(@RequestParam("archivo") MultipartFile file, Model model, HttpSession session){
+        
+        String root = System.getProperty("user.dir");
+        String rutaArchivo = "/src/main/resources/archivos/";
+        String fechaSubida = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmSS"));
+        String rutaFinal = root + rutaArchivo +  fechaSubida + file.getOriginalFilename();
+        
+        // 7/0
+        // if (divisor == 0) throw("error")
+        
+        try {
+            file.transferTo(new File(rutaFinal));
+        } catch (Exception ex) {
+            System.out.println(ex.getLocalizedMessage());
+        } 
         
         if (file.getOriginalFilename().split("\\.")[1].equals("txt")){
-            List<Alumno> alumnos = ProcesarTXT(file);
+            List<Alumno> alumnos = ProcesarTXT(new File(rutaFinal));
             List<ErrorCM> errores = ValidarDatos(alumnos);
             
             if (errores.isEmpty()) {
                 model.addAttribute("listaErrores", errores);
                 model.addAttribute("archivoCorrecto", true);
+                session.setAttribute("path", rutaFinal); // esto no regresa a la vista
             } else {
                 model.addAttribute("listaErrores", errores);
                 model.addAttribute("archivoCorrecto", false);
@@ -184,12 +207,13 @@ public class AlumnoController {
             //si lista errores diferente de vacio, intentar desplegar lista de errores en carga masiva
         } else {
              // excel
-             List<Alumno> alumnos = ProcesarExcel(file);
+             List<Alumno> alumnos = ProcesarExcel(new File(rutaFinal));
              List<ErrorCM> errores = ValidarDatos(alumnos);
             
             if (errores.isEmpty()) {
                 model.addAttribute("listaErrores", errores);
                 model.addAttribute("archivoCorrecto", true);
+                session.setAttribute("path", rutaFinal); // esto no regresa a la vista
             } else {
                 model.addAttribute("listaErrores", errores);
                 model.addAttribute("archivoCorrecto", false);
@@ -200,10 +224,38 @@ public class AlumnoController {
         return "CargaMasiva";
     }
     
-    private List<Alumno> ProcesarTXT(MultipartFile file){
+    
+    @GetMapping("cargamasiva/procesar")
+    public String CargaMasiva(HttpSession session){
         try {
-            InputStream inputStream = file.getInputStream();
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+            
+            String  ruta = session.getAttribute("path").toString();
+            
+            List<Alumno> alumnos;
+            
+            if (ruta.split("\\.")[1].equals("txt")) {
+                alumnos = ProcesarTXT(new File(ruta));
+            } else {
+                alumnos = ProcesarExcel(new File(ruta));
+            }
+            
+            
+            for (Alumno alumno : alumnos) {
+                alumnoDAOImplementation.Add(alumno);
+            }
+            
+            session.removeAttribute("path");
+            
+        } catch (Exception ex) {
+            System.out.println(ex.getLocalizedMessage());
+        }
+        
+        return "redirect:/alumno";
+    }
+    
+    private List<Alumno> ProcesarTXT(File file){
+        try {
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
             
             String linea = ""; 
             List<Alumno> alumnos = new ArrayList<>();
@@ -225,11 +277,12 @@ public class AlumnoController {
         }
     }
     
-    private List<Alumno> ProcesarExcel(MultipartFile file){
+    private List<Alumno> ProcesarExcel(File file){
         
         List<Alumno> alumnos = new ArrayList<>();
         
-        try (XSSFWorkbook workbook = new XSSFWorkbook(file.getInputStream())){
+        try {
+            XSSFWorkbook workbook = new XSSFWorkbook(file);
             Sheet sheet = workbook.getSheetAt(0);
             for (Row row : sheet) {
                 Alumno alumno = new Alumno();
