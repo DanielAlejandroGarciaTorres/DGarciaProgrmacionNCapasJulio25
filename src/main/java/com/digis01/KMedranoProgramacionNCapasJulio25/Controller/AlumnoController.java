@@ -61,7 +61,9 @@ public class AlumnoController {
 
     @GetMapping // verbo http GET, POST, PUT, DELETE, PATCH
     public String Index(Model model) {
-        Result result = alumnoDAOImplementation.GetAll();
+        Result result = alumnoDAOImplementation.GetAll(new Alumno("", "", ""));
+
+        model.addAttribute("alumnoBusqueda", new Alumno());
 
         if (result.correct) {
             model.addAttribute("alumnos", result.objects);
@@ -69,6 +71,17 @@ public class AlumnoController {
             model.addAttribute("alumnos", null);
         }
 
+        return "AlumnoIndex";
+    }
+
+    @PostMapping
+    public String Index(Model model, @ModelAttribute("alumnoBusqueda") Alumno alumnoBusqueda ) {
+
+        Result result = alumnoDAOImplementation.GetAll(alumnoBusqueda);
+        
+//        model.addAttribute("alumnoBusqueda", alumnoBusqueda);
+        model.addAttribute("alumnos", result.objects);
+        
         return "AlumnoIndex";
     }
 
@@ -168,33 +181,32 @@ public class AlumnoController {
 
         return municipioDAOImplementation.MunicipioByEstado(IdEstado);
     }
-    
+
     @GetMapping("cargamasiva")
-    public String CargaMasiva(){
+    public String CargaMasiva() {
         return "CargaMasiva";
     }
-    
+
     @PostMapping("cargamasiva")
-    public String CargaMasiva(@RequestParam("archivo") MultipartFile file, Model model, HttpSession session){
-        
+    public String CargaMasiva(@RequestParam("archivo") MultipartFile file, Model model, HttpSession session) {
+
         String root = System.getProperty("user.dir");
         String rutaArchivo = "/src/main/resources/archivos/";
         String fechaSubida = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmSS"));
-        String rutaFinal = root + rutaArchivo +  fechaSubida + file.getOriginalFilename();
-        
+        String rutaFinal = root + rutaArchivo + fechaSubida + file.getOriginalFilename();
+
         // 7/0
         // if (divisor == 0) throw("error")
-        
         try {
             file.transferTo(new File(rutaFinal));
         } catch (Exception ex) {
             System.out.println(ex.getLocalizedMessage());
-        } 
-        
-        if (file.getOriginalFilename().split("\\.")[1].equals("txt")){
+        }
+
+        if (file.getOriginalFilename().split("\\.")[1].equals("txt")) {
             List<Alumno> alumnos = ProcesarTXT(new File(rutaFinal));
             List<ErrorCM> errores = ValidarDatos(alumnos);
-            
+
             if (errores.isEmpty()) {
                 model.addAttribute("listaErrores", errores);
                 model.addAttribute("archivoCorrecto", true);
@@ -203,13 +215,13 @@ public class AlumnoController {
                 model.addAttribute("listaErrores", errores);
                 model.addAttribute("archivoCorrecto", false);
             }
-            
+
             //si lista errores diferente de vacio, intentar desplegar lista de errores en carga masiva
         } else {
-             // excel
-             List<Alumno> alumnos = ProcesarExcel(new File(rutaFinal));
-             List<ErrorCM> errores = ValidarDatos(alumnos);
-            
+            // excel
+            List<Alumno> alumnos = ProcesarExcel(new File(rutaFinal));
+            List<ErrorCM> errores = ValidarDatos(alumnos);
+
             if (errores.isEmpty()) {
                 model.addAttribute("listaErrores", errores);
                 model.addAttribute("archivoCorrecto", true);
@@ -217,49 +229,47 @@ public class AlumnoController {
             } else {
                 model.addAttribute("listaErrores", errores);
                 model.addAttribute("archivoCorrecto", false);
-            }        
+            }
 
         }
-        
+
         return "CargaMasiva";
     }
-    
-    
+
     @GetMapping("cargamasiva/procesar")
-    public String CargaMasiva(HttpSession session){
+    public String CargaMasiva(HttpSession session) {
         try {
-            
-            String  ruta = session.getAttribute("path").toString();
-            
+
+            String ruta = session.getAttribute("path").toString();
+
             List<Alumno> alumnos;
-            
+
             if (ruta.split("\\.")[1].equals("txt")) {
                 alumnos = ProcesarTXT(new File(ruta));
             } else {
                 alumnos = ProcesarExcel(new File(ruta));
             }
-            
-            
+
             for (Alumno alumno : alumnos) {
                 alumnoDAOImplementation.Add(alumno);
             }
-            
+
             session.removeAttribute("path");
-            
+
         } catch (Exception ex) {
             System.out.println(ex.getLocalizedMessage());
         }
-        
+
         return "redirect:/alumno";
     }
-    
-    private List<Alumno> ProcesarTXT(File file){
+
+    private List<Alumno> ProcesarTXT(File file) {
         try {
             BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
-            
-            String linea = ""; 
+
+            String linea = "";
             List<Alumno> alumnos = new ArrayList<>();
-            while ((linea = bufferedReader.readLine()) != null) {                
+            while ((linea = bufferedReader.readLine()) != null) {
                 String[] campos = linea.split("\\|");
                 Alumno alumno = new Alumno();
                 alumno.setNombre(campos[0]);
@@ -271,53 +281,52 @@ public class AlumnoController {
                 alumnos.add(alumno);
             }
             return alumnos;
-        } catch (Exception ex){
+        } catch (Exception ex) {
             System.out.println("error");
             return null;
         }
     }
-    
-    private List<Alumno> ProcesarExcel(File file){
-        
+
+    private List<Alumno> ProcesarExcel(File file) {
+
         List<Alumno> alumnos = new ArrayList<>();
-        
+
         try {
             XSSFWorkbook workbook = new XSSFWorkbook(file);
             Sheet sheet = workbook.getSheetAt(0);
             for (Row row : sheet) {
                 Alumno alumno = new Alumno();
-                alumno.setNombre(row.getCell(0) != null ?  row.getCell(0).toString() : "");
+                alumno.setNombre(row.getCell(0) != null ? row.getCell(0).toString() : "");
                 alumno.setApellidoPaterno(row.getCell(1).toString());
                 alumno.Semestre = new Semestre();
                 alumno.Semestre.setIdSemestre(row.getCell(4) != null ? (int) row.getCell(4).getNumericCellValue() : 0);
-                
+
                 alumnos.add(alumno);
             }
             return alumnos;
         } catch (Exception ex) {
             return null;
         }
-        
-        
+
     }
-    
-    private List<ErrorCM> ValidarDatos(List<Alumno> alumnos){
+
+    private List<ErrorCM> ValidarDatos(List<Alumno> alumnos) {
         List<ErrorCM> errores = new ArrayList<>();
-        int linea = 1; 
+        int linea = 1;
         for (Alumno alumno : alumnos) {
-            if (alumno.getNombre() == null || alumno.getNombre() == ""){
-                errores.add(new ErrorCM(linea, alumno.getNombre() == "" ? "vacio" : alumno.getNombre(), "Nombre es un campo obligatorio")); 
+            if (alumno.getNombre() == null || alumno.getNombre() == "") {
+                errores.add(new ErrorCM(linea, alumno.getNombre() == "" ? "vacio" : alumno.getNombre(), "Nombre es un campo obligatorio"));
             }
-            if (alumno.getApellidoPaterno()== null || alumno.getApellidoPaterno()== ""){
-                errores.add(new ErrorCM(linea, alumno.getApellidoPaterno(), "Campo obligatorio")); 
+            if (alumno.getApellidoPaterno() == null || alumno.getApellidoPaterno() == "") {
+                errores.add(new ErrorCM(linea, alumno.getApellidoPaterno(), "Campo obligatorio"));
             }
-            
+
             if (alumno.Semestre.getIdSemestre() == 0) {
-                errores.add(new ErrorCM(linea, alumno.Semestre.getIdSemestre()+"", "Numero de colonia no valido"));
+                errores.add(new ErrorCM(linea, alumno.Semestre.getIdSemestre() + "", "Numero de colonia no valido"));
             }
-            linea ++;
+            linea++;
         }
-        
+
         return errores;
     }
 }

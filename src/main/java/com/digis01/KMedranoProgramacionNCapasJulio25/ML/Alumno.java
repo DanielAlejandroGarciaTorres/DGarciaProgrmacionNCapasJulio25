@@ -24,6 +24,13 @@ public class Alumno {
     public Alumno(int IdAlumno) {
         this.IdAlumno = IdAlumno;
     }
+
+    public Alumno(String Nombre, String ApellidoPaterno, String ApellidoMaterno) {
+        this.Nombre = Nombre;
+        this.ApellidoPaterno = ApellidoPaterno;
+        this.ApellidoMaterno = ApellidoMaterno;
+    }
+    
     
     
 

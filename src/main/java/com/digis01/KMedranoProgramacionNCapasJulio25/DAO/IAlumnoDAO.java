@@ -6,7 +6,7 @@ import com.digis01.KMedranoProgramacionNCapasJulio25.ML.Result;
 
 public interface IAlumnoDAO {
     
-    Result GetAll();// metodo abstracto, es decir, no lleva implementación
+    Result GetAll(Alumno alumno);// metodo abstracto, es decir, no lleva implementación
     
     Result DireccionesByIdAlumno(int idAlumno);
     
