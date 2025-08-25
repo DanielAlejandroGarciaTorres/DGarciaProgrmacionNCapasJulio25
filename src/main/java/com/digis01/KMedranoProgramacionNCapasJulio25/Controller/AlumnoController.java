@@ -1,6 +1,7 @@
 package com.digis01.KMedranoProgramacionNCapasJulio25.Controller;
 
 import com.digis01.KMedranoProgramacionNCapasJulio25.DAO.AlumnoDAOImplementation;
+import com.digis01.KMedranoProgramacionNCapasJulio25.DAO.AlumnoJPADAOImplementation;
 import com.digis01.KMedranoProgramacionNCapasJulio25.DAO.EstadoDAOImplementation;
 import com.digis01.KMedranoProgramacionNCapasJulio25.DAO.MunicipioDAOImplementation;
 import com.digis01.KMedranoProgramacionNCapasJulio25.DAO.SemestreDAOImplementatiton;
@@ -51,6 +52,9 @@ public class AlumnoController {
     private AlumnoDAOImplementation alumnoDAOImplementation;
 
     @Autowired
+    private AlumnoJPADAOImplementation alumnoJPADAOImplementation;
+    
+    @Autowired
     private EstadoDAOImplementation estadoDAOImplementation;
 
     @Autowired
@@ -63,6 +67,8 @@ public class AlumnoController {
     public String Index(Model model) {
         Result result = alumnoDAOImplementation.GetAll(new Alumno("", "", ""));
 
+        alumnoJPADAOImplementation.GetAll();
+        
         model.addAttribute("alumnoBusqueda", new Alumno());
 
         if (result.correct) {
