@@ -4,6 +4,7 @@ import com.digis01.KMedranoProgramacionNCapasJulio25.JPA.Alumno;
 import com.digis01.KMedranoProgramacionNCapasJulio25.ML.Result;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -21,9 +22,16 @@ public class AlumnoJPADAOImplementation implements IAlumnoJPADAO{
         
         try {
             
-            TypedQuery<Alumno> queryAlumno = entityManager.createQuery("FROM Alumno", Alumno.class);
+            TypedQuery<Alumno> queryAlumno = entityManager.createQuery("FROM Alumno ORDER BY IdAlumno", Alumno.class);
             List<Alumno> alumnos = queryAlumno.getResultList();
             
+            result.objects = new ArrayList<>();
+            
+            for (Alumno alumno : alumnos) {
+                result.objects.add(new com.digis01.KMedranoProgramacionNCapasJulio25.ML.Alumno(alumno));
+            }
+            
+            result.correct = true;
             /*Bajar a ML para renderizar*/
             
         } catch (Exception ex){

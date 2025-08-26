@@ -65,9 +65,9 @@ public class AlumnoController {
 
     @GetMapping // verbo http GET, POST, PUT, DELETE, PATCH
     public String Index(Model model) {
-        Result result = alumnoDAOImplementation.GetAll(new Alumno("", "", ""));
+//        Result result = alumnoDAOImplementation.GetAll(new Alumno("", "", ""));
 
-        alumnoJPADAOImplementation.GetAll();
+        Result result = alumnoJPADAOImplementation.GetAll();
         
         model.addAttribute("alumnoBusqueda", new Alumno());
 

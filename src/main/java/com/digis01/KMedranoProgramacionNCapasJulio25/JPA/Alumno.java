@@ -1,5 +1,6 @@
 package com.digis01.KMedranoProgramacionNCapasJulio25.JPA;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -8,11 +9,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Alumno {
     
-    @Id
+    @Id 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idalumno")
     private int IdAlumno;
@@ -31,6 +35,9 @@ public class Alumno {
     @Column( name = "imagen")
     private String Imagen;
 
+    @OneToMany(mappedBy = "Alumno", cascade = CascadeType.ALL, orphanRemoval = true)
+    public List<Direccion> Direcciones = new ArrayList<>();
+    
     public int getIdAlumno() {
         return IdAlumno;
     }

@@ -3,6 +3,7 @@ package com.digis01.KMedranoProgramacionNCapasJulio25.ML;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Alumno {
@@ -20,6 +21,27 @@ public class Alumno {
     
     
     public Alumno(){}
+    
+    public Alumno(com.digis01.KMedranoProgramacionNCapasJulio25.JPA.Alumno alumnoJPA){
+        this.IdAlumno = alumnoJPA.getIdAlumno();
+        this.Nombre = alumnoJPA.getNombre();
+        this.ApellidoPaterno = alumnoJPA.getApellidoPaterno();
+        this.ApellidoMaterno = alumnoJPA.getApellidoMaterno();
+        this.UserName = alumnoJPA.getUserName();
+        this.Semestre = new Semestre();
+        this.Semestre.setIdSemestre(alumnoJPA.Semestre.getIdSemestre());
+        this.Semestre.setNombre(alumnoJPA.Semestre.getNombre());
+        if (alumnoJPA.Direcciones != null && alumnoJPA.Direcciones.size() > 0){ // para saber si tiene direcciones
+            this.Direcciones = new ArrayList<>();
+            for (com.digis01.KMedranoProgramacionNCapasJulio25.JPA.Direccion Direccione : alumnoJPA.Direcciones) {
+                Direccion direccion = new Direccion();
+                direccion.setIdDireccion(Direccione.getIdDireccion());
+                direccion.setCalle(Direccione.getCalle());
+                
+                this.Direcciones.add(direccion);
+            }
+        }
+    }
 
     public Alumno(int IdAlumno) {
         this.IdAlumno = IdAlumno;
