@@ -53,7 +53,7 @@ public class AlumnoController {
 
     @Autowired
     private AlumnoJPADAOImplementation alumnoJPADAOImplementation;
-    
+
     @Autowired
     private EstadoDAOImplementation estadoDAOImplementation;
 
@@ -68,7 +68,7 @@ public class AlumnoController {
 //        Result result = alumnoDAOImplementation.GetAll(new Alumno("", "", ""));
 
         Result result = alumnoJPADAOImplementation.GetAll();
-        
+
         model.addAttribute("alumnoBusqueda", new Alumno());
 
         if (result.correct) {
@@ -81,13 +81,13 @@ public class AlumnoController {
     }
 
     @PostMapping
-    public String Index(Model model, @ModelAttribute("alumnoBusqueda") Alumno alumnoBusqueda ) {
+    public String Index(Model model, @ModelAttribute("alumnoBusqueda") Alumno alumnoBusqueda) {
 
         Result result = alumnoDAOImplementation.GetAll(alumnoBusqueda);
-        
+
 //        model.addAttribute("alumnoBusqueda", alumnoBusqueda);
         model.addAttribute("alumnos", result.objects);
-        
+
         return "AlumnoIndex";
     }
 
@@ -157,7 +157,7 @@ public class AlumnoController {
             return "AlumnoForm";
         } else {
 
-            if (imagen != null) {
+            if (imagen != null && imagen.getOriginalFilename() != "") {
                 String nombre = imagen.getOriginalFilename();
                 //archivo.jpg
                 //[archivo,jpg]
@@ -174,7 +174,8 @@ public class AlumnoController {
                 }
             }
 
-            Result result = alumnoDAOImplementation.Add(alumno);
+//            Result result = alumnoDAOImplementation.Add(alumno);
+            Result result = alumnoJPADAOImplementation.Add(alumno);
             return "redirect:/alumno";
         }
     }

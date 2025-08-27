@@ -7,4 +7,6 @@ public interface IAlumnoJPADAO {
 
     Result GetAll();
     
+    Result Add(com.digis01.KMedranoProgramacionNCapasJulio25.ML.Alumno alumno);
+    
 }

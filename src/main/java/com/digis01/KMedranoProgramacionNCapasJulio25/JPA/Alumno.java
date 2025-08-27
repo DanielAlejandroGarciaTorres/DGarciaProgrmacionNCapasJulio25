@@ -38,6 +38,28 @@ public class Alumno {
     @OneToMany(mappedBy = "Alumno", cascade = CascadeType.ALL, orphanRemoval = true)
     public List<Direccion> Direcciones = new ArrayList<>();
     
+    
+    public Alumno (com.digis01.KMedranoProgramacionNCapasJulio25.ML.Alumno alumnoML){
+        this.Nombre = alumnoML.getNombre();
+        this.ApellidoPaterno = alumnoML.getApellidoPaterno();
+        this.ApellidoMaterno = alumnoML.getApellidoMaterno();
+        this.UserName = alumnoML.getUserName();
+        this.Imagen = alumnoML.getImagen();
+        this.Semestre = new Semestre();
+        this.Semestre.setIdSemestre(alumnoML.Semestre.getIdSemestre());
+        for (com.digis01.KMedranoProgramacionNCapasJulio25.ML.Direccion Direccione : alumnoML.Direcciones) {
+            Direccion direccion = new Direccion();
+            direccion.setCalle(Direccione.getCalle());
+            direccion.setNumeroInterior(Direccione.getNumeroInterior());
+            direccion.setNumeroExterior(Direccione.getNumeroExterior());
+            direccion.Colonia = new Colonia();
+            direccion.Colonia.setIdColonia(Direccione.Colonia.getIdColonia());
+            direccion.Alumno = this;
+            
+            Direcciones.add(direccion);
+        }
+    }
+    
     public int getIdAlumno() {
         return IdAlumno;
     }
