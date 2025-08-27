@@ -9,4 +9,6 @@ public interface IAlumnoJPADAO {
     
     Result Add(com.digis01.KMedranoProgramacionNCapasJulio25.ML.Alumno alumno);
     
+    Result Delete(int IdAlumno);
+    
 }

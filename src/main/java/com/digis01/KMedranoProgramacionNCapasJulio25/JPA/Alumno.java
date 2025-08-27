@@ -37,7 +37,9 @@ public class Alumno {
 
     @OneToMany(mappedBy = "Alumno", cascade = CascadeType.ALL, orphanRemoval = true)
     public List<Direccion> Direcciones = new ArrayList<>();
-    
+
+    public Alumno() {
+    }
     
     public Alumno (com.digis01.KMedranoProgramacionNCapasJulio25.ML.Alumno alumnoML){
         this.Nombre = alumnoML.getNombre();

@@ -179,6 +179,14 @@ public class AlumnoController {
             return "redirect:/alumno";
         }
     }
+    
+    @GetMapping("delete/{IdAlumno}")
+    public String Delete(@PathVariable("IdAlumno") int IdAlumno){
+        
+        Result result = alumnoJPADAOImplementation.Delete(IdAlumno);
+        
+        return "redirect:/alumno";
+    }
 
     //getMunicipioByEstado?IdEstado=7 -- requestParam
     //getMunicipioByestado/7 -- pathVariable
