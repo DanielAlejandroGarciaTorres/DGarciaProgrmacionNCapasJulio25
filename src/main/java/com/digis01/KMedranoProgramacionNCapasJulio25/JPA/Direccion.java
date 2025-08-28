@@ -31,6 +31,20 @@ public class Direccion {
     
     public Direccion() {
     }
+    
+    public Direccion(com.digis01.KMedranoProgramacionNCapasJulio25.ML.Alumno alumnoML){
+//        alumnoML.Direcciones.get(0) -> Direccion ML
+        com.digis01.KMedranoProgramacionNCapasJulio25.ML.Direccion direccionML = alumnoML.Direcciones.get(0);
+        
+        this.IdDireccion = direccionML.getIdDireccion();
+        this.Calle = direccionML.getCalle();
+        this.NumeroInterior = direccionML.getNumeroInterior();
+        this.NumeroExterior = direccionML.getNumeroExterior();
+        this.Colonia = new Colonia();
+        this.Colonia.setIdColonia(direccionML.Colonia.getIdColonia());
+        this.Alumno = new Alumno();
+        this.Alumno.setIdAlumno(alumnoML.getIdAlumno());
+    }
 
     public Direccion(int IdDireccion) {
         this.IdDireccion = IdDireccion;

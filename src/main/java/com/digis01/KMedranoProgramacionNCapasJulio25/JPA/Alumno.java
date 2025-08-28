@@ -15,8 +15,8 @@ import java.util.List;
 
 @Entity
 public class Alumno {
-    
-    @Id 
+
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idalumno")
     private int IdAlumno;
@@ -29,10 +29,10 @@ public class Alumno {
     @Column(name = "username")
     private String UserName;
     @ManyToOne
-    @JoinColumn( name = "idsemestre")
+    @JoinColumn(name = "idsemestre")
     public Semestre Semestre; // propiedad de navegación (No ocupa setter ni getter)
     @Lob
-    @Column( name = "imagen")
+    @Column(name = "imagen")
     private String Imagen;
 
     @OneToMany(mappedBy = "Alumno", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -40,8 +40,9 @@ public class Alumno {
 
     public Alumno() {
     }
-    
-    public Alumno (com.digis01.KMedranoProgramacionNCapasJulio25.ML.Alumno alumnoML){
+
+    public Alumno(com.digis01.KMedranoProgramacionNCapasJulio25.ML.Alumno alumnoML) {
+        this.IdAlumno = alumnoML.getIdAlumno();
         this.Nombre = alumnoML.getNombre();
         this.ApellidoPaterno = alumnoML.getApellidoPaterno();
         this.ApellidoMaterno = alumnoML.getApellidoMaterno();
@@ -49,19 +50,24 @@ public class Alumno {
         this.Imagen = alumnoML.getImagen();
         this.Semestre = new Semestre();
         this.Semestre.setIdSemestre(alumnoML.Semestre.getIdSemestre());
-        for (com.digis01.KMedranoProgramacionNCapasJulio25.ML.Direccion Direccione : alumnoML.Direcciones) {
-            Direccion direccion = new Direccion();
-            direccion.setCalle(Direccione.getCalle());
-            direccion.setNumeroInterior(Direccione.getNumeroInterior());
-            direccion.setNumeroExterior(Direccione.getNumeroExterior());
-            direccion.Colonia = new Colonia();
-            direccion.Colonia.setIdColonia(Direccione.Colonia.getIdColonia());
-            direccion.Alumno = this;
-            
-            Direcciones.add(direccion);
+
+        if (alumnoML.Direcciones.get(0).getIdDireccion() == -1) {
+            alumnoML.Direcciones = null;
+        } else {
+            for (com.digis01.KMedranoProgramacionNCapasJulio25.ML.Direccion Direccione : alumnoML.Direcciones) {
+                Direccion direccion = new Direccion();
+                direccion.setCalle(Direccione.getCalle());
+                direccion.setNumeroInterior(Direccione.getNumeroInterior());
+                direccion.setNumeroExterior(Direccione.getNumeroExterior());
+                direccion.Colonia = new Colonia();
+                direccion.Colonia.setIdColonia(Direccione.Colonia.getIdColonia());
+                direccion.Alumno = this;
+
+                Direcciones.add(direccion);
+            }
         }
     }
-    
+
     public int getIdAlumno() {
         return IdAlumno;
     }
@@ -117,7 +123,5 @@ public class Alumno {
     public void setImagen(String Imagen) {
         this.Imagen = Imagen;
     }
-    
-    
-    
-}   
+
+}

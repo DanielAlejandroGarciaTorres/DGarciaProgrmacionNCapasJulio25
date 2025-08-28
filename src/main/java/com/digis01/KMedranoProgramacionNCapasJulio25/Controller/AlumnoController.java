@@ -2,6 +2,7 @@ package com.digis01.KMedranoProgramacionNCapasJulio25.Controller;
 
 import com.digis01.KMedranoProgramacionNCapasJulio25.DAO.AlumnoDAOImplementation;
 import com.digis01.KMedranoProgramacionNCapasJulio25.DAO.AlumnoJPADAOImplementation;
+import com.digis01.KMedranoProgramacionNCapasJulio25.DAO.DireccionJPADAOImplementation;
 import com.digis01.KMedranoProgramacionNCapasJulio25.DAO.EstadoDAOImplementation;
 import com.digis01.KMedranoProgramacionNCapasJulio25.DAO.MunicipioDAOImplementation;
 import com.digis01.KMedranoProgramacionNCapasJulio25.DAO.SemestreDAOImplementatiton;
@@ -23,6 +24,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -54,6 +56,9 @@ public class AlumnoController {
     @Autowired
     private AlumnoJPADAOImplementation alumnoJPADAOImplementation;
 
+    @Autowired
+    private DireccionJPADAOImplementation direccionJPADAOImplementation;
+    
     @Autowired
     private EstadoDAOImplementation estadoDAOImplementation;
 
@@ -122,8 +127,8 @@ public class AlumnoController {
 
         if (IdDireccion == null) {  // Editar Usuario
             /* recuperar información del usuario*/
-            Alumno alumno = new Alumno(); //esto lo haré manual
-            alumno.setIdAlumno(IdAlumno);
+            Result result = alumnoJPADAOImplementation.GetById(IdAlumno);
+            Alumno alumno = (Alumno) result.object;
             alumno.Direcciones = new ArrayList<>();
             alumno.Direcciones.add(new Direccion(-1));
             model.addAttribute("Alumno", alumno);
@@ -157,34 +162,61 @@ public class AlumnoController {
             return "AlumnoForm";
         } else {
 
-            if (imagen != null && imagen.getOriginalFilename() != "") {
-                String nombre = imagen.getOriginalFilename();
-                //archivo.jpg
-                //[archivo,jpg]
-                String extension = nombre.split("\\.")[1];
-                if (extension.equals("jpg")) {
-                    try {
-                        byte[] bytes = imagen.getBytes();
-                        String base64Image = Base64.getEncoder().encodeToString(bytes);
-                        alumno.setImagen(base64Image);
-                    } catch (Exception ex) {
-                        System.out.println("Error");
-                    }
+            if (alumno.getIdAlumno() > 0 && alumno.Direcciones.get(0).getIdDireccion() > 0) {
 
+                Result result = direccionJPADAOImplementation.Update(alumno);
+                
+            } else if (alumno.getIdAlumno() > 0 && alumno.Direcciones.get(0).getIdDireccion() == -1) {
+                if (imagen != null && imagen.getOriginalFilename() != "") {
+                    String nombre = imagen.getOriginalFilename();
+                    //archivo.jpg
+                    //[archivo,jpg]
+                    String extension = nombre.split("\\.")[1];
+                    if (extension.equals("jpg")) {
+                        try {
+                            byte[] bytes = imagen.getBytes();
+                            String base64Image = Base64.getEncoder().encodeToString(bytes);
+                            alumno.setImagen(base64Image);
+                        } catch (Exception ex) {
+                            System.out.println("Error");
+                        }
+                    }
                 }
+                
+                Result result = alumnoJPADAOImplementation.Update(alumno);
+                
+            } else if (alumno.getIdAlumno() == 0 && alumno.Direcciones.get(0).getIdDireccion() == 0) {
+                if (imagen != null && imagen.getOriginalFilename() != "") {
+                    String nombre = imagen.getOriginalFilename();
+                    //archivo.jpg
+                    //[archivo,jpg]
+                    String extension = nombre.split("\\.")[1];
+                    if (extension.equals("jpg")) {
+                        try {
+                            byte[] bytes = imagen.getBytes();
+                            String base64Image = Base64.getEncoder().encodeToString(bytes);
+                            alumno.setImagen(base64Image);
+                        } catch (Exception ex) {
+                            System.out.println("Error");
+                        }
+
+                    }
+                }
+            } else if (alumno.getIdAlumno() > 0 && alumno.Direcciones.get(0).getIdDireccion() == 0) {
+
             }
 
 //            Result result = alumnoDAOImplementation.Add(alumno);
-            Result result = alumnoJPADAOImplementation.Add(alumno);
+//            Result result = alumnoJPADAOImplementation.Add(alumno);
             return "redirect:/alumno";
         }
     }
-    
+
     @GetMapping("delete/{IdAlumno}")
-    public String Delete(@PathVariable("IdAlumno") int IdAlumno){
-        
+    public String Delete(@PathVariable("IdAlumno") int IdAlumno) {
+
         Result result = alumnoJPADAOImplementation.Delete(IdAlumno);
-        
+
         return "redirect:/alumno";
     }
 

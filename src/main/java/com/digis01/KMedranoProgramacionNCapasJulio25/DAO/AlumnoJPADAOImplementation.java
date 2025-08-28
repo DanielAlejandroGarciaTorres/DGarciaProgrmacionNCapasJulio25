@@ -86,4 +86,48 @@ public class AlumnoJPADAOImplementation implements IAlumnoJPADAO {
         return result;
     }
 
+    @Transactional
+    @Override
+    public Result Update(com.digis01.KMedranoProgramacionNCapasJulio25.ML.Alumno alumnoML) {
+        
+        Result result = new Result();
+        try {
+            
+            Alumno alumnoJPA = new Alumno(alumnoML);
+            Alumno alumnoBD = entityManager.find(Alumno.class, alumnoML.getIdAlumno());
+            
+            alumnoJPA.Direcciones = alumnoBD.Direcciones;
+            
+            entityManager.merge(alumnoJPA);
+            result.correct = true;
+            
+        } catch (Exception ex) {
+            result.correct = false;
+            result.errorMessage = ex.getLocalizedMessage();
+            result.ex = ex;
+        }
+        
+        return result;
+    }
+
+    @Override
+    public Result GetById(int IdAlumno) {
+        Result result = new Result();
+        
+        try{
+            
+            Alumno alumnoJPA =  entityManager.find(Alumno.class, IdAlumno);
+            com.digis01.KMedranoProgramacionNCapasJulio25.ML.Alumno alumnoML = new com.digis01.KMedranoProgramacionNCapasJulio25.ML.Alumno(alumnoJPA);
+            result.object = alumnoML;
+            result.correct = true;
+            
+        } catch (Exception ex){
+            result.correct = false;
+            result.errorMessage = ex.getLocalizedMessage();
+            result.ex = ex;
+        }
+        
+        return result;
+    }
+
 }
